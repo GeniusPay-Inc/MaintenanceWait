@@ -58,6 +58,16 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.15;letter-spacing:-.02em;margin:
 .todo h2{font-size:16px;margin-bottom:8px}
 .todo ul{padding-left:18px;color:var(--ink-2);font-size:14.5px}
 .todo li+li{margin-top:6px}
+.support{margin-top:16px;padding:24px;display:flex;gap:16px;align-items:center}
+.support .ico{flex:none;margin:0;background:var(--info-bg)}
+.support .ico svg{stroke:var(--brand)}
+.sup-b{flex:1}
+.sup-b h2{font-size:16px;margin-bottom:4px}
+.sup-b p{font-size:14px;color:var(--ink-2)}
+.btn{font:inherit;font-size:15px;font-weight:600;color:#fff;background:var(--brand);border:0;border-radius:10px;padding:12px 22px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.btn:hover{background:var(--brand-d)}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.btn[disabled]{opacity:.7;cursor:progress}
 .status{margin-top:28px;text-align:center;font-size:13px;color:var(--mut)}
 .status strong{color:var(--ink-2)}
 footer{border-top:1px solid var(--line);background:#fff;padding:22px 20px;text-align:center;font-size:13px;color:var(--mut)}
@@ -71,7 +81,8 @@ a{color:var(--brand)}
 .step{text-align:left;display:grid;grid-template-columns:32px 1fr;column-gap:14px;align-items:center;padding:0}
 .step::before{display:none}
 .mark{margin:0;grid-row:span 2}
-.todo{flex-direction:column}
+.todo,.support{flex-direction:column;align-items:flex-start}
+.btn{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.dot{animation:none}}
 </style>
@@ -140,6 +151,16 @@ a{color:var(--brand)}
 </div>
 </aside>
 
+<section class="card support" aria-labelledby="sup-t">
+<div class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+<div class="sup-b">
+<h2 id="sup-t" data-l="fr">Besoin d'aide ? Parlez à notre équipe</h2><h2 id="sup-t-en" data-l="en">Need help? Talk to our team</h2>
+<p data-l="fr">Notre équipe support reste disponible pour répondre à vos questions pendant la maintenance.</p>
+<p data-l="en">Our support team remains available to answer your questions during the maintenance.</p>
+</div>
+<button type="button" id="chat" class="btn"><span data-l="fr">Discuter avec le support</span><span data-l="en">Chat with support</span></button>
+</section>
+
 <p class="status"><span data-l="fr">Dernière vérification :</span><span data-l="en">Last checked:</span> <strong id="t">--:--</strong></p>
 </main>
 
@@ -154,7 +175,17 @@ var d=document,h=d.documentElement;
 function set(l){h.lang=l;d.querySelectorAll("[data-set]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.set===l)});try{localStorage.setItem("gp_lang",l)}catch(e){}}
 d.querySelectorAll("[data-set]").forEach(function(b){b.addEventListener("click",function(){set(b.dataset.set)})});
 var s;try{s=localStorage.getItem("gp_lang")}catch(e){}
-set(s||((navigator.language||"fr").slice(0,2)==="fr"?"fr":"en"));
+set(s==="en"?"en":"fr");
+var cb=d.getElementById("chat"),loaded=false;
+window.Tawk_API=window.Tawk_API||{};window.Tawk_LoadStart=new Date();
+cb.addEventListener("click",function(){
+if(loaded){Tawk_API.maximize&&Tawk_API.maximize();return}
+loaded=true;cb.disabled=true;
+Tawk_API.onLoad=function(){cb.disabled=false;Tawk_API.maximize()};
+var s1=d.createElement("script");s1.async=true;s1.src="https://embed.tawk.to/69416e5c5fc363197c60f684/1jcjpe6oo";s1.charset="UTF-8";s1.setAttribute("crossorigin","*");
+s1.onerror=function(){loaded=false;cb.disabled=false};
+d.head.appendChild(s1);
+});
 d.getElementById("y").textContent=new Date().getFullYear();
 d.getElementById("t").textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
 function check(){
